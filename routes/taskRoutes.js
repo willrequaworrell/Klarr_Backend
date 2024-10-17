@@ -3,7 +3,7 @@ const Task = require('../models/Task');
 const router = express.Router();
 
 // Test backend running
-router.post('/', async (req, res) => {
+router.get('/', async (req, res) => {
     try {
       res.json({"message": "hello world"})
     } catch (error) {
