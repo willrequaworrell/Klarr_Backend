@@ -35,6 +35,7 @@ router.get('/:userId', async (req, res) => {
 // Update a task
 router.patch('/:id', async (req, res) => {
   try {
+    console.log(req.body)
     const task = await Task.findByIdAndUpdate(req.params.id, 
       { ...req.body, updatedAt: Date.now() }, 
       { new: true }
