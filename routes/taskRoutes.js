@@ -39,11 +39,11 @@ router.patch('/:id', async (req, res) => {
     
     const updateData = {};
     if (req.body.title) {
-        console.log("title!!!!")
         updateData.title = req.body.title
     }
     if (req.body.column) updateData.column = req.body.column;
     updateData.updatedAt = Date.now();
+    console.log(updateData)
 
     const task = await Task.findByIdAndUpdate(
         req.params.id, 
