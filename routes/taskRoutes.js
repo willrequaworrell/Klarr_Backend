@@ -35,20 +35,9 @@ router.get('/:userId', async (req, res) => {
 // Update a task
 router.patch('/:id', async (req, res) => {
   try {
-    console.log(req.body, req.params.id)
-    
-    const updateData = {};
-    if (req.body.title) {
-        updateData.title = req.body.title
-    }
-    if (req.body.column) updateData.column = req.body.column;
-    updateData.updatedAt = Date.now();
-    console.log(updateData)
-
-    const task = await Task.findByIdAndUpdate(
-        req.params.id, 
-        updateData, 
-        { new: true }
+    const task = await Task.findByIdAndUpdate(req.params.id, 
+      { ...req.body, updatedAt: Date.now() }, 
+      { new: true }
     );
     if (!task) return res.status(404).json({ message: 'Task not found' });
     res.json(task);
