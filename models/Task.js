@@ -6,9 +6,12 @@ const TaskSchema = new mongoose.Schema({
   title: { type: String, required: true },
   dueDate: { type: Date },
   column: { type: String, enum: ['today', 'upcoming', 'optional'], required: true },
+  order: { type: Number, required: true },
   createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now }
+  updatedAt: { type: Date, default: Date.now },
 });
+
+TaskSchema.index({ userId: 1, column: 1, order: 1 });
 
 const Task = mongoose.model('Task', TaskSchema);
 
