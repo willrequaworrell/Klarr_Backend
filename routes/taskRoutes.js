@@ -14,7 +14,21 @@ router.get('/', async (req, res) => {
 // Create a new task
 router.post('/', async (req, res) => {
   try {
-    const task = new Task(req.body);
+	const { userId, column, dueDate } = req.body;
+	let newOrder = 0;
+
+	if (column !== 'upcoming') {
+		const highestOrderTask = await Task.findOne({ userId, column })
+		  .sort({ order: -1 })
+		  .limit(1);
+		
+		newOrder = highestOrderTask ? highestOrderTask.order + 1 : 0;
+	  }
+
+    const task = new Task({
+      ...req.body,
+      order: column === 'upcoming' ? null : newOrder
+    });
     await task.save();
     res.status(201).json(task);
   } catch (error) {
@@ -24,13 +38,26 @@ router.post('/', async (req, res) => {
 
 // Get all tasks for a user
 router.get('/:userId', async (req, res) => {
-  try {
-    const tasks = await Task.find({ userId: req.params.userId });
-    res.json(tasks);
-  } catch (error) {
-    res.status(500).json({ message: error.message });
-  }
+	try {
+		const tasks = await Task.find({ userId: req.params.userId });
+		const sortedTasks = tasks.sort((a, b) => {
+			if (a.column !== b.column) {
+				return ['today', 'upcoming', 'optional'].indexOf(a.column) - 
+				['today', 'upcoming', 'optional'].indexOf(b.column);
+			} else if (a.column === 'upcoming') {
+				return new Date(a.dueDate) - new Date(b.dueDate);
+			} else {
+				return a.order - b.order;
+			}
+		})
+		res.json(sortedTasks)
+	} catch (error) {
+		res.status(500).json({ message: error.message });
+	}
 });
+
+
+
 
 // Update a task
 router.patch('/:id', async (req, res) => {
