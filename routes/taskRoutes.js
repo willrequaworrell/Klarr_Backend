@@ -73,6 +73,19 @@ router.patch('/:id', async (req, res) => {
   }
 });
 
+// update many tasks
+router.patch('/reorder', async (req, res) => {
+	try {
+	  const { tasks } = req.body;
+	  for (let task of tasks) {
+		await Task.findByIdAndUpdate(task.id, { order: task.order });
+	  }
+	  res.status(200).json({ message: 'Tasks reordered successfully' });
+	} catch (error) {
+	  res.status(500).json({ message: error.message });
+	}
+  });
+
 // Delete a task
 router.delete('/:id', async (req, res) => {
   try {
