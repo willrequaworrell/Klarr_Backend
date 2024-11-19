@@ -6,7 +6,7 @@ const TaskSchema = new mongoose.Schema({
   title: { type: String, required: true },
   dueDate: { type: Date },
   column: { type: String, enum: ['today', 'upcoming', 'optional'], required: true },
-  order: { type: Number, required: true },
+  order: { type: Number, default: null },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
 });
