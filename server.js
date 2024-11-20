@@ -10,7 +10,7 @@ const app = express();
 
 const allowedOrigins = [
     'https://klarr.vercel.app',
-    'http://localhost:3000' // for local development
+    'http://localhost:5173' // for local development
 ];
 
 const captureResponse = (req, res, next) => {
