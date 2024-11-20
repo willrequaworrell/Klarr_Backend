@@ -45,6 +45,7 @@ app.use(captureResponse)
 app.use(cors({
     origin: function (origin, callback) {
       console.log('Request origin:', origin);  // Log the origin of the request
+      console.log("Origin in accepted list?:", allowedOrigins.includes(origin))
   
       // allow requests with no origin 
       // (like mobile apps or curl requests)
