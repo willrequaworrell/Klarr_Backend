@@ -53,8 +53,10 @@ router.get('/:userId', async (req, res) => {
 				return a.order - b.order;
 			}
 		})
+    console.log("sending response:", sortedTasks)
 		res.json(sortedTasks)
 	} catch (error) {
+    console.log("error:", error)
 		res.status(500).json({ message: error.message });
 	}
 });
