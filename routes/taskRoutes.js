@@ -40,6 +40,7 @@ router.post('/', async (req, res) => {
 
 // Get all tasks for a user
 router.get('/:userId', async (req, res) => {
+  console.log("getting all tasks for", req.userId)
 	try {
 		const tasks = await Task.find({ userId: req.params.userId });
 		const sortedTasks = tasks.sort((a, b) => {
