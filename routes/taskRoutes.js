@@ -2,6 +2,8 @@ const express = require('express');
 const Task = require('../models/Task');
 const router = express.Router();
 
+
+
 // Test backend running
 router.get('/', async (req, res) => {
     try {
@@ -53,7 +55,7 @@ router.get('/:userId', async (req, res) => {
 				return a.order - b.order;
 			}
 		})
-    console.log("sending response:", sortedTasks)
+    console.log("sending response:", res.header)
 		res.json(sortedTasks)
 	} catch (error) {
     console.log("error:", error)

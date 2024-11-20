@@ -17,22 +17,52 @@ const captureResponse = (req, res, next) => {
     const oldJson = res.json;
     res.json = function (data) {
       const capturedResponse = {
-        statusCode: res.statusCode,
-        headers: res.getHeaders(),
-        body: data
+        request: {
+          method: req.method,
+          url: req.url,
+          headers: req.headers,
+          body: req.body
+        },
+        response: {
+          statusCode: res.statusCode,
+          headers: res.getHeaders(),
+          body: data
+        }
       };
-      console.log('Captured Response:', JSON.stringify(capturedResponse, null, 2));
+      console.log('Captured Request/Response:', JSON.stringify(capturedResponse, null, 2));
       return oldJson.call(this, data);
     };
     next();
   };
-  
+
 app.use(captureResponse)
+// app.use(cors({
+//     origin: '*',
+//     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+//     allowedHeaders: ['Content-Type', 'Authorization']
+//   }));
+
 app.use(cors({
-    origin: '*',
+    origin: function (origin, callback) {
+      console.log('Request origin:', origin);  // Log the origin of the request
+  
+      // allow requests with no origin 
+      // (like mobile apps or curl requests)
+      if (!origin) {
+        console.log('Request has no origin');
+        return callback(null, true);
+      }
+      if (allowedOrigins.indexOf(origin) === -1) {
+        var msg = 'The CORS policy for this site does not ' +
+                  'allow access from the specified Origin.';
+        console.log(msg);  // Log the error message
+        return callback(new Error(msg), false);
+      }
+      return callback(null, true);
+    },
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization']
-  }));
+}));
 
 // app.options('*', cors());
 app.use(express.json());
