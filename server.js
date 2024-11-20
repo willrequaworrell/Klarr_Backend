@@ -13,6 +13,21 @@ const allowedOrigins = [
     'http://localhost:3000' // for local development
 ];
 
+const captureResponse = (req, res, next) => {
+    const oldJson = res.json;
+    res.json = function (data) {
+      const capturedResponse = {
+        statusCode: res.statusCode,
+        headers: res.getHeaders(),
+        body: data
+      };
+      console.log('Captured Response:', JSON.stringify(capturedResponse, null, 2));
+      return oldJson.call(this, data);
+    };
+    next();
+  };
+  
+app.use(captureResponse)
 app.use(cors({
     origin: '*',
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
