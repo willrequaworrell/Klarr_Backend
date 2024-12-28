@@ -5,7 +5,9 @@ const connectDB = require('./config/db');
 
 const taskRoutes = require('./routes/taskRoutes')
 const baseRoutes = require('./routes/baseRoutes')
-//test
+const userPreferencesRoutes = require('./routes/userPreferencesRoutes');
+
+
 const app = express();
 
 const allowedOrigins = [
@@ -36,16 +38,11 @@ const captureResponse = (req, res, next) => {
   };
 
 app.use(captureResponse)
-// app.use(cors({
-//     origin: '*',
-//     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
-//     allowedHeaders: ['Content-Type', 'Authorization']
-//   }));
+
 
 app.use(cors({
     origin: function (origin, callback) {
-      console.log('Request origin:', origin);  // Log the origin of the request
-  
+      
       // allow requests with no origin 
       // (like mobile apps or curl requests)
       if (!origin) {
@@ -64,10 +61,10 @@ app.use(cors({
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
-// app.options('*', cors());
 app.use(express.json());
 app.use('/api/tasks', taskRoutes)
 app.use('/', baseRoutes)
+app.use('/api/preferences', userPreferencesRoutes);
 
 const PORT = process.env.PORT || 3000;
 
