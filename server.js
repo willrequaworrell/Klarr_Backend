@@ -12,7 +12,7 @@ const app = express();
 
 const allowedOrigins = [
     'https://klarr.vercel.app',
-    'https://www.klarr.app/',
+    'https://www.klarr.app',
     'http://localhost:5173' // for local development
 ];
 
