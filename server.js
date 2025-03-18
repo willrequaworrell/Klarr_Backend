@@ -1,4 +1,5 @@
 require('dotenv').config();
+const rateLimit = require('express-rate-limit');
 const express = require('express');
 const cors = require('cors');
 const connectDB = require('./config/db');
@@ -9,6 +10,7 @@ const userPreferencesRoutes = require('./routes/userPreferencesRoutes');
 
 
 const app = express();
+
 
 const allowedOrigins = [
     'https://klarr.vercel.app',
@@ -62,7 +64,28 @@ app.use(cors({
     allowedHeaders: ['Content-Type', 'Authorization']
 }));
 
+
 app.use(express.json());
+
+const limiter = rateLimit({
+  windowMs: 10 * 60 * 1000, // 10 minutes
+  max: 100, // limit each IP to 100 requests per windowMs
+  message: 'Too many requests from this IP, please try again after 15 minutes',
+  headers: true, // Send rate limit headers in responses
+  keyGenerator: (req) => req.ip, // Use the IP address as the key
+  handler: (req, res, next, options) => {
+    res.status(options.statusCode).json({
+      message: options.message,
+      rateLimit: {
+        max: options.max,
+        windowMs: options.windowMs,
+      },
+    });
+  },
+});
+
+app.use(limiter);
+
 app.use('/api/tasks', taskRoutes)
 app.use('/', baseRoutes)
 app.use('/api/preferences', userPreferencesRoutes);
